@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>💘</title>
+  <style>
+    :root { --bg1:#ffdde1; --bg2:#ee9ca7; --card:#ffffffcc; }
+    *{box-sizing:border-box}
+    body{
+      margin:0; min-height:100vh; display:grid; place-items:center;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(circle at top, var(--bg1), var(--bg2));
+      overflow:hidden;
+    }
+    .card{
+      width:min(520px, 92vw);
+      background:var(--card);
+      backdrop-filter: blur(10px);
+      border:1px solid #ffffff80;
+      border-radius:24px;
+      padding:28px;
+      box-shadow: 0 18px 60px #00000025;
+      text-align:center;
+    }
+    h1{ margin:0 0 10px; font-size:28px; }
+    p{ margin:0 0 18px; font-size:16px; opacity:.9; }
+    .btns{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+    button{
+      border:0; border-radius:999px;
+      padding:12px 18px;
+      font-size:16px; cursor:pointer;
+      transition: transform .08s ease, filter .2s ease;
+    }
+    button:active{ transform: scale(.98); }
+    .yes{ background:#ff3b7b; color:white; }
+    .no{ background:#111827; color:white; opacity:.9; }
+    .result{ margin-top:18px; display:none; }
+    .result img{
+      width:min(360px, 90%);
+      border-radius:18px;
+      box-shadow: 0 14px 40px #0000002a;
+      margin-top:12px;
+    }
+    .hearts{
+      position:fixed; inset:0; pointer-events:none;
+    }
+    .heart{
+      position:absolute;
+      font-size:22px;
+      animation: floatUp linear forwards;
+      filter: drop-shadow(0 6px 10px #00000025);
+      opacity:.95;
+    }
+    @keyframes floatUp{
+      from{ transform: translateY(0) scale(.9) rotate(0deg); opacity:0; }
+      10%{ opacity:1; }
+      to{ transform: translateY(-110vh) scale(1.25) rotate(25deg); opacity:0; }
+    }
+    .small{ font-size:13px; opacity:.7; margin-top:10px; }
+  </style>
+</head>
+<body>
+  <div class="hearts" id="hearts"></div>
+
+  <div class="card">
+    <h1 id="title">Ты будешь моей валентинкой? 💘</h1>
+    <p id="subtitle">Выбирай осторожно. Я слежу.</p>
+
+    <div class="btns">
+      <button class="yes" id="yesBtn">Да</button>
+      <button class="no" id="noBtn">Нет</button>
+    </div>
+
+    <div class="result" id="result">
+      <h1>Ура 😌💘</h1>
+      <p>Официально: ты попалась. Теперь праздник — твоя обязанность.</p>
+      <!-- Замени src на свою картинку (можно ссылкой) -->
+      <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=900&q=80"
+           alt="hearts">
+      <div class="small">P.S. если что, кнопки назад не существует 🙂</div>
+    </div>
+  </div>
+
+  <script>
+    const noTexts = [
+      "Нет? ты серьёзно?",
+      "Подумай ещё раз.",
+      "Ты уверен?....",
+      "Хорошо...Но...ты же знаешь про скомканный лист, да?",
+      "Ты разбиваешь мне сердце.",
+      "Ладно. Последний шанс. Нажми «Да».",
+      "Вот так ты меня любишь, я поняла"
+    ];
+
+    let noCount = 0;
+
+    const title = document.getElementById("title");
+    const subtitle = document.getElementById("subtitle");
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const result = document.getElementById("result");
+    const hearts = document.getElementById("hearts");
+
+    noBtn.addEventListener("click", () => {
+      title.textContent = noTexts[Math.min(noCount, noTexts.length - 1)];
+      subtitle.textContent = "Ладно, нажимай сколько хочешь. Но смысл?";
+      noCount++;
+
+      // маленькая “подстава”: кнопка Да становится чуть заметнее
+      const scale = 1 + Math.min(noCount * 0.06, 0.35);
+      yesBtn.style.transform = `scale(${scale})`;
+      noBtn.style.filter = `brightness(${Math.max(1 - noCount*0.05, 0.65)})`;
+    });
+
+    yesBtn.addEventListener("click", () => {
+      title.textContent = "Правильный выбор 💅";
+      subtitle.textContent = "Праздник активирован.";
+      result.style.display = "block";
+
+      // сердечки-эффект
+      burstHearts(70);
+    });
+
+    function burstHearts(n){
+      const emojis = ["💖","💘","💝","💗","💓","💕","❤️"];
+      for(let i=0;i<n;i++){
+        const el = document.createElement("div");
+        el.className = "heart";
+        el.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+        el.style.left = Math.random()*100 + "vw";
+        el.style.bottom = (-10 - Math.random()*20) + "px";
+        el.style.animationDuration = (2.6 + Math.random()*2.2) + "s";
+        el.style.fontSize = (16 + Math.random()*20) + "px";
+        el.style.animationDelay = (Math.random()*0.25) + "s";
+        hearts.appendChild(el);
+
+        el.addEventListener("animationend", () => el.remove());
+      }
+    }
+  </script>
+</body>
+</html>
